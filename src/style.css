@@ -1,45 +1,116 @@
 :root {
+  /* Theme tokens */
+  --bg: #0b1220;
+  --card: #0f1724;
+  --text: #e6eef8;
+  --muted: #9fb3d6;
+
+  /* Accent as HSL derived from numeric tokens so JS can adjust lightness */
+  --hsl-h: 217; /* hue */
+  --hsl-s: 78; /* saturation % */
+  --hsl-l: 45; /* lightness % (will be bumped by JS) */
+  --accent: hsl(var(--hsl-h) var(--hsl-s) % var(--hsl-l) %);
+
+  --radius: 6px;
+  --gap: 1rem;
+  --fs-base: 12px;
+
+  /* Typography defaults */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--text);
+  background-color: var(--bg);
+}
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Light theme overrides */
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0b1220;
+  --muted: #4b5563;
+  /* light theme uses slightly different accent tokens */
+  --accent-h: 218;
+  --accent-s: 85;
+  --accent-l: 48;
+  /* --accent is derived from the tokens above */
+}
+
+/* Minimal reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* App container */
+#app {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: clamp(1rem, 2.5vw, 2rem);
+}
+
+h1 {
+  font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+  line-height: 1.1;
+  margin: 0;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--accent);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--accent-600);
 }
 
-body {
-  margin: 0;
+.app-wrap {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
+    var(--card);
+  border-radius: var(--radius);
+  padding: clamp(1rem, 2.5vw, 2rem);
+  box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  flex-direction: column;
+  gap: var(--gap);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.lead {
+  color: var(--muted);
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.card {
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .logo {
@@ -49,18 +120,7 @@ h1 {
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #3178c6aa);
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  filter: drop-shadow(0 0 2em rgba(100, 108, 255, 0.67));
 }
 
 button {
@@ -70,27 +130,76 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background: var(--accent);
+  color: var(--card);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: transform 160ms ease, box-shadow 160ms ease;
 }
 button:hover {
-  border-color: #646cff;
+  transform: translateY(-2px);
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+button:active {
+  transform: scale(0.99);
+}
+button:focus {
+  outline: 3px solid rgba(59, 130, 246, 0.16);
+  outline-offset: 3px;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+/* Counter state classes (use from JS instead of inline styles) */
+button.counter--zero {
+  background-color: darkgreen;
+  color: white;
+  transition: background-color 160ms ease;
+}
+button.counter--low {
+  background-color: green;
+  color: white;
+  transition: background-color 160ms ease;
+}
+button.counter--high {
+  background-color: lightgreen;
+  color: #071025;
+  transition: background-color 160ms ease;
+}
+
+/* Theme-toggle small style */
+.theme-btn {
+  background: transparent;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
   }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+}
+
+/* Utility */
+.muted {
+  color: var(--muted);
+}
+
+.sticky-element {
+  /* 1. Set the position to sticky */
+  position: sticky;
+
+  /* 2. Set the initial position to the bottom of its parent */
+  /* This is what makes it start at the bottom of the container's *current viewport area* */
+  bottom: 0;
+
+  /* 3. Set the final sticking point to the top of the viewport */
+  top: 0;
+
+  /* Styling for visibility */
+  padding: 20px;
+  background-color: #3498db;
+  color: white;
+  text-align: center;
+  width: 100%;
 }
