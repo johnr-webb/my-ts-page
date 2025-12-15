@@ -4,24 +4,33 @@ import { setupThemeToggle, savedTheme } from "./theme.ts";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   <div class="app-wrap">
-    <div class="sticky-element">
-      I will stick to the top!
+    <div class="navbar">
+      <ul>
+        <li>
+          <img class="logo" src="/favicon.png" alt="JW website logo" />
+        </li>
+        <li>Home</li>
+        <li>About</li>
+        <li>Contact</li>
+        <li>
+          <button id="theme-toggle" type="button" aria-label="Toggle Theme">
+            ${savedTheme === "dark" ? "Light Mode" : "Dark Mode"}
+          </button>
+        </li>
+      </ul>
     </div>
-    <p>Lots of content...</p>
-    <p>More content...</p>
     <div class="header">
+      <img src="/headshot.jpg" alt="John Webb's handsome headshot" />
       <div>
         <h1>John Webb's GitHub Pages Site</h1>
-        <p class="lead">I am going to make this page really cool.</p>
+        <a href="https://github.com/johnr-webb">Link to GitHub</a>
       </div>
-    </div>
-    <div>
-        <button id="theme-toggle" class="theme-btn" aria-pressed="${
-          savedTheme === "light"
-        }" title="Toggle theme">Toggle theme</button>
     </div>
     <div class="card">
       <button id="counter" type="button" aria-label="Counter"></button>
+    </div>
+    <div class="footer">
+      <p>This website is written and maintained by John Webb</p>
     </div>
   </div>
 `;
