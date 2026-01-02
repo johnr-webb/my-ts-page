@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width" />
     <title>John Webb Pages</title>
     <script type="module" src="/src/main.ts"></script>
+    <script id="maps-script"></script>
+    <script type="module">
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+      document.getElementById(
+        "maps-script"
+      ).src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+    </script>
   </head>
   <body>
     <div id="app"></div>
