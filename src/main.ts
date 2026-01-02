@@ -1,7 +1,7 @@
 import "./style.css";
-import { setupCounter } from "./counter.ts";
 import { setupThemeToggle, savedTheme } from "./theme.ts";
 import { setupBackground } from "./background.ts";
+import { setupLoad } from "./on_load.ts";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   <div class="app-wrap">
@@ -49,15 +49,4 @@ setupBackground(
   document.querySelector<HTMLSelectElement>("#bg-select")!,
   document.querySelector<HTMLButtonElement>("#bg-submit")!
 );
-
-// Wait for Google Maps API to load
-const mapsScript = document.getElementById("maps-script") as HTMLScriptElement;
-mapsScript.addEventListener("load", () => {
-  const map = new (window as any).google.maps.Map(
-    document.getElementById("map"),
-    {
-      zoom: 10,
-      center: { lat: 40.7128, lng: -74.006 },
-    }
-  );
-});
+setupLoad(document.getElementById("maps-script") as HTMLScriptElement);
