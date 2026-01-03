@@ -1,7 +1,7 @@
 import "./style.css";
 import { setupThemeToggle, savedTheme } from "./theme.ts";
 import { setupBackground } from "./background.ts";
-import { setupLoad } from "./on_load.ts";
+import { initMap } from "./map.ts";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   <div class="app-wrap">
@@ -49,4 +49,4 @@ setupBackground(
   document.querySelector<HTMLSelectElement>("#bg-select")!,
   document.querySelector<HTMLButtonElement>("#bg-submit")!
 );
-setupLoad(document.getElementById("maps-script") as HTMLScriptElement);
+initMap("map");
