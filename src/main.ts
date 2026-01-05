@@ -3,12 +3,15 @@ import { setupThemeToggle, savedTheme } from "./theme.ts";
 import { setupBackground } from "./background.ts";
 import { initMap, addMarkerFromAddress } from "./map.ts";
 
+// Assets
+import logoUrl from "./assets/logo.png";
+
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   <div class="app-wrap">
     <div class="navbar">
       <ul>
         <li>
-          <img class="logo" src="/favicon.png" alt="JW website logo" />
+          <img class="logo" src="${logoUrl}" alt="JW website logo" />
         </li>
         <li>Home</li>
         <li>About</li>
