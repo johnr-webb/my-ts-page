@@ -1,36 +1,30 @@
 import "./style.css";
 import { setupThemeToggle, savedTheme } from "./theme.ts";
-import { setupBackground } from "./background.ts";
 import { initMap, addMarkerFromAddress } from "./map.ts";
 
 // Assets
 import logoUrl from "./assets/logo.png";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
+  <div class="navbar">
+    <div class="nav-title">
+      <img class="logo" src="${logoUrl}" alt="JW website logo" />
+      <h2 class="nav-title">Chicago Apartment Hunter</h2>
+    </div>
+    <ul class="nav-items">
+      <li>Contact</li>
+      <li>
+        <button id="theme-toggle" type="button" aria-label="Toggle Theme">
+          ${savedTheme === "dark" ? "Light Mode" : "Dark Mode"}
+        </button>
+      </li>
+    </ul>
+  </div>  
   <div class="app-wrap">
-    <div class="navbar">
-      <ul>
-        <li>
-          <img class="logo" src="${logoUrl}" alt="JW website logo" />
-        </li>
-        <li>Home</li>
-        <li>About</li>
-        <li>Contact</li>
-        <li>
-          <button id="theme-toggle" type="button" aria-label="Toggle Theme">
-            ${savedTheme === "dark" ? "Light Mode" : "Dark Mode"}
-          </button>
-        </li>
-      </ul>
-    </div>
-    <div class="card">
-      <select id="bg-select">
-        <option value="#FFFFFF">White</option>
-        <option value="#004d00">Dark Green</option>
-        <option value="#533483">Purple</option>
-      </select>
-      <button id="bg-submit" type="button">Set BG</button>
-    </div>
+    <h1>My TypeScript Map Page</h1>
+    <p>
+      This is a simple TypeScript web page that integrates Google Maps and allows you to add markers based on addresses.
+    </p>
     <div id="map" style="width: 100%; height: 400px; border-radius: 8px;"></div>
     <div class="add-location-card">
       <h3>Add New Location</h3>
@@ -63,16 +57,12 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
       </form>
     </div>
     <div class="footer">
-      <p>This website is written and maintained by John Webb</p>
+      <p>This website is written and maintained by John Webb <a href="https://github.com/johnr-webb">Link to GitHub</a></p>
     </div>
   </div>
 `;
 
 setupThemeToggle(document.querySelector<HTMLButtonElement>("#theme-toggle")!);
-setupBackground(
-  document.querySelector<HTMLSelectElement>("#bg-select")!,
-  document.querySelector<HTMLButtonElement>("#bg-submit")!
-);
 
 const addLocationBtn =
   document.querySelector<HTMLButtonElement>("#add-location-btn")!;

@@ -7,20 +7,22 @@ let isLoaded = false;
 export function loadGoogleMaps(): Promise<void> {
   if (isLoaded) return Promise.resolve();
 
+  // Check if script is already in the document
+  if (
+    typeof window !== "undefined" &&
+    document.querySelector(`script[src*="maps.googleapis.com"]`)
+  ) {
+    isLoaded = true;
+    return Promise.resolve();
+  }
   return new Promise((resolve, reject) => {
-    // Check if script is already in the document
-    if (document.querySelector('script[src*="maps.googleapis.com"]')) {
-      isLoaded = true;
-      resolve();
-      return;
-    }
-
     // Create the script tag
     const script = document.createElement("script");
     script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&loading=async&callback=${CALLBACK_NAME}`;
     script.async = true;
     script.defer = true;
-    script.onerror = () => reject(new Error("Failed to load Google Maps API"));
+    const msg = "Failed loading Google Maps API. Check your API key.";
+    script.onerror = () => reject(new Error(msg));
 
     // Define the callback that the script will call when finished
     (window as any)[CALLBACK_NAME] = () => {
