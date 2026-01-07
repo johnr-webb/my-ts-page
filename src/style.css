@@ -35,7 +35,7 @@ body {
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
-  transition: background-color 10s, color 10s;
+  transition: background-color 0.4s, color 0.4s;
 }
 
 /* App container */
@@ -216,7 +216,7 @@ button:active {
 
 /* Map styles */
 #map {
-  height: 100vh;
+  height: 600px;
   width: 100%;
 }
 

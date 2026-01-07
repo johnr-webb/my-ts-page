@@ -1,4 +1,3 @@
-// src/mapLogic.ts
 import { loadGoogleMaps } from "./mapLoader";
 
 let mapInstance: any = null;
