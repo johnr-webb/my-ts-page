@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "type": "highrise",
+    "name": "1 Superior Place",
+    "position": { "lat": 41.895293, "lng": -87.628716 }
+  },
+  {
+    "id": 2,
+    "type": "highrise",
+    "name": "1 Chicago",
+    "position": { "lat": 41.895985, "lng": -87.628809 }
+  },
+  {
+    "id": 3,
+    "type": "work",
+    "name": "Work",
+    "position": { "lat": 41.894513, "lng": -87.622876 }
+  }
+]
