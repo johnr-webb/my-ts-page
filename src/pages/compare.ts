@@ -1,6 +1,6 @@
 import { renderMap } from "../components/MapView";
-import { renderTable } from "../components/locationsTable";
-import { renderForm } from "../components/addLocationForm";
+import { renderTable } from "../components/LocationsTable";
+import { renderForm } from "../components/AddLocationForm";
 import { LocationService } from "../services/LocationsService";
 
 export async function renderComparePage(appElement: HTMLElement) {
