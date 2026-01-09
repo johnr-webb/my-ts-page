@@ -1,6 +1,6 @@
 import LogUrl from "../assets/logo.png";
 import { navigateTo } from "../router";
-import { setupThemeToggle } from "./theme";
+import { setupThemeToggle } from "./Theme";
 
 const NavBar = (mount: HTMLElement) => {
   const navBarElement = mount;

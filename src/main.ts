@@ -1,5 +1,5 @@
 import "./style.css";
-import NavBar from "./components/navBar";
+import NavBar from "./components/NavBar";
 import { navigateTo, setupRouting, routes } from "./router";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
