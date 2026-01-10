@@ -1,12 +1,12 @@
 :root {
   /* Theme tokens */
-  --bg: #000000;
+  --bg: #151515;
   --text: #ffffff;
   --shadow: #ffffff;
 
   --radius: 6px;
   --gap: 1rem;
-  --pad: 1rem;
+  --pad: 4rem;
   --min-font: 16px;
 
   /* Typography defaults */
@@ -63,11 +63,10 @@ a:hover {
   background-color: var(--bg);
 }
 
-.app-wrap {
+#app-wrap {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  contain: content;
+  padding: 36px;
 }
 
 .header {
