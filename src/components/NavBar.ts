@@ -12,14 +12,10 @@ const NavBar = (mount: HTMLElement) => {
       <h2 class="nav-title">Housing Hunt</h2>
     </div>
     <ul class="nav-items">
+      <li><p class="theme-btn">🌙</p></li>
       <li><a href="#" id="home-link">Home</a></li>
       <li><a href="#" id="compare-link">Compare Apartments</a></li>
       <li><a href="#" id="find-link">Find</a></li>
-      <li>
-        <button id="theme-toggle" type="button" aria-label="Toggle Theme">
-          Toggle Theme
-        </button>
-      </li>
     </ul>
   `;
 
@@ -43,12 +39,10 @@ const NavBar = (mount: HTMLElement) => {
       e.preventDefault();
       navigateTo("/find");
     });
-
   // Setup theme toggle button
   const themeBtn =
-    navBarElement.querySelector<HTMLButtonElement>("#theme-toggle");
+    navBarElement.querySelector<HTMLParagraphElement>(".theme-btn");
   if (themeBtn) setupThemeToggle(themeBtn);
-
   return navBarElement;
 };
 

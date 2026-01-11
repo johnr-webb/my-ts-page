@@ -1,21 +1,33 @@
-export let savedTheme = (() => {
-  try {
-    const v = localStorage.getItem("theme");
-    console.log("Detecting theme preference... found:", v);
-    if (v) return v;
-  } catch {}
-  return window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: light)").matches
-    ? "light"
-    : "dark";
-})();
+export function setupThemeToggle(button: HTMLParagraphElement) {
+  const getInitialTheme = (): "light" | "dark" => {
+    try {
+      const stored = localStorage.getItem("theme") as "light" | "dark" | null;
+      if (stored) return stored;
+    } catch {}
 
-export function setupThemeToggle(button: HTMLButtonElement) {
-  button.addEventListener("click", () => {
-    savedTheme = savedTheme === "dark" ? "light" : "dark";
-    localStorage.setItem("theme", savedTheme);
-    document.documentElement.setAttribute("data-theme", savedTheme);
-    console.log("Changed theme to:", savedTheme);
-    button.textContent = savedTheme === "dark" ? "Light Mode" : "Dark Mode";
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  };
+
+  const applyTheme = (theme: "light" | "dark") => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("theme", theme);
+    button.textContent = theme === "dark" ? "🌙" : "☀️";
+  };
+
+  if (!document.documentElement.dataset.theme) {
+    applyTheme(getInitialTheme());
+  } else {
+    button.textContent =
+      document.documentElement.dataset.theme === "dark" ? "🌙" : "☀️";
+  }
+
+  button.addEventListener("click", (e) => {
+    e.preventDefault();
+    const current = document.documentElement.dataset.theme as "light" | "dark";
+    const nextTheme = current === "dark" ? "light" : "dark";
+
+    applyTheme(nextTheme);
   });
 }
