@@ -8,12 +8,11 @@ const NavBar = (mount: HTMLElement) => {
 
   navBarElement.innerHTML = `
     <div class="nav-title">
-      <img src="${LogUrl}" alt="Housing Hunt Logo" class="logo" />
+      <a href="#" id="home-link"><img src="${LogUrl}" alt="Housing Hunt Logo" class="logo"></a>
       <h2 class="nav-title">Housing Hunt</h2>
     </div>
     <ul class="nav-items">
       <li><p class="theme-btn">🌙</p></li>
-      <li><a href="#" id="home-link">Home</a></li>
       <li><a href="#" id="compare-link">Compare Apartments</a></li>
       <li><a href="#" id="find-link">Find</a></li>
     </ul>
