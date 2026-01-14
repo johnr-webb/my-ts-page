@@ -6,10 +6,11 @@ import { LocationService } from "../services/LocationsService";
 export async function renderComparePage(appElement: HTMLElement) {
   const content = `
     <div class="compare-page">
-      <h1>Compare Apartments</h1>
+      <h1>Compare Apartments!</h1>
       <p>
-        Use this page to compare different apartments based on your preferences.
+        Please fill out the form below to get started.
       </p>
+      <div id="new-user-form"></div>
       <div id="map"></div>
       <div id="add-location-card"></div>
       <div id="locations-table"></div>

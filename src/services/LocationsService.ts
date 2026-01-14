@@ -1,6 +1,9 @@
 // services/LocationService.ts
+import { UserService } from "./UserService";
+
 export interface LocationItem {
   id: string;
+  userId: string;
   name: string;
   type: string;
   position: {
@@ -9,7 +12,7 @@ export interface LocationItem {
   };
 }
 
-let locations: LocationItem[] = [];
+let allLocations: LocationItem[] = [];
 
 export const MARKERCONS = {
   walkup: "🏠",
@@ -23,9 +26,9 @@ export const LocationService = {
     const dataUrl = new URL("data/locations.json", baseUrl);
 
     const response = await fetch(dataUrl.href);
-    locations = await response.json();
+    allLocations = await response.json();
     this.notify();
-    return locations;
+    return allLocations;
   },
 
   async addByAddress(name: string, address: string, type: string = "walkup") {
@@ -36,9 +39,10 @@ export const LocationService = {
 
       if (result.results && result.results[0]) {
         const location = result.results[0].geometry.location;
-
+        const user = UserService.getProfile();
         const newLocation: LocationItem = {
           id: crypto.randomUUID(),
+          userId: user.id,
           name: name,
           position: {
             lat: location.lat(),
@@ -57,31 +61,32 @@ export const LocationService = {
   },
 
   add(loc: LocationItem) {
-    locations.push(loc);
+    allLocations.push(loc);
     // Save to localStorage or DB here
     this.notify();
   },
 
   patch(id: string, updatedFields: Partial<LocationItem>) {
-    locations = locations.map((loc) =>
+    allLocations = allLocations.map((loc) =>
       loc.id === id ? { ...loc, ...updatedFields } : loc
     );
     this.notify();
   },
 
   remove(id: string) {
-    locations = locations.filter((loc) => loc.id !== id);
+    allLocations = allLocations.filter((loc) => loc.id !== id);
     this.notify();
   },
 
   notify() {
     window.dispatchEvent(
-      new CustomEvent("locationsUpdated", { detail: locations })
+      new CustomEvent("locationsUpdated", { detail: allLocations })
     );
   },
 
   getCurrent() {
-    return locations;
+    const user = UserService.getProfile();
+    return allLocations.filter((loc) => loc.userId === user.id);
   },
 };
 
