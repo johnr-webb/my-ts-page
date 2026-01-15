@@ -23,7 +23,6 @@ export function renderTable(mount: HTMLElement) {
   const tableBody =
     mount.querySelector<HTMLTableSectionElement>('[id="table-body"]')!;
 
-  // 2. The Rendering Logic: How to turn data into HTML rows
   const updateRows = (locations: LocationItem[]) => {
     if (locations.length === 0) {
       tableBody.innerHTML = `<tr><td colspan="5">No locations added yet.</td></tr>`;
