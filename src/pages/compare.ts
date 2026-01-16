@@ -2,6 +2,7 @@ import { renderMap } from "../components/MapView";
 import { renderTable } from "../components/LocationsTable";
 import { renderForm } from "../components/AddLocationForm";
 import { LocationService } from "../services/LocationsService";
+import { renderUserSurvey } from "../components/NewUserForm";
 
 export async function renderComparePage(appElement: HTMLElement) {
   const content = `
@@ -19,7 +20,9 @@ export async function renderComparePage(appElement: HTMLElement) {
 
   appElement.innerHTML = content;
 
-  // 1. Initialize Components (Pass them their specific "homes")
+  renderUserSurvey(
+    appElement.querySelector<HTMLDivElement>('[id="new-user-form"]')!
+  );
   renderMap(appElement.querySelector<HTMLDivElement>('[id="map"]')!);
   renderForm(
     appElement.querySelector<HTMLDivElement>('[id="add-location-card"]')!

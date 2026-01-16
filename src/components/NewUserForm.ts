@@ -5,22 +5,22 @@ let answers: Partial<UserProfile> = {};
 
 const questions = [
   {
-    id: "budget",
-    label: "What is your maximum monthly budget?",
-    type: "number",
-    placeholder: "e.g. 2000",
+    id: "name",
+    label: "What is your name?",
+    type: "text",
+    placeholder: "John Doe",
   },
   {
-    id: "locationPreference",
-    label: "Which neighborhood do you prefer?",
+    id: "email",
+    label: "What is your email?",
     type: "text",
-    placeholder: "e.g. Lincoln Park",
+    placeholder: "john.doe@gmail.com",
   },
   {
     id: "workAddress",
     label: "What is your work address?",
     type: "text",
-    placeholder: "e.g. Lincoln Park",
+    placeholder: "insert address",
   },
 ];
 
@@ -31,7 +31,7 @@ export function renderUserSurvey(mount: HTMLElement) {
 
     mount.innerHTML = `
       <div class="survey-container">
-        <p>Step ${currentStep + 1} of ${questions.length}</p>
+        <p>Question ${currentStep + 1} of ${questions.length}</p>
         <form id="survey-form">
           <label>${question.label}</label>
           ${renderInput(question)}
