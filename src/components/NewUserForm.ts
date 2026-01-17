@@ -93,6 +93,7 @@ function setupEventListeners(mount: HTMLElement, isLastStep: boolean) {
 
 function handleFinalSubmit() {
   console.log("Survey Complete:", answers);
+  localStorage.setItem("hasVisited", "yes");
   // TODO!
 
   // 1. Save to a UserPreferencesService

@@ -19,17 +19,25 @@ export async function renderComparePage(appElement: HTMLElement) {
   `;
 
   appElement.innerHTML = content;
-
-  renderUserSurvey(
-    appElement.querySelector<HTMLDivElement>('[id="new-user-form"]')!
-  );
-  renderMap(appElement.querySelector<HTMLDivElement>('[id="map"]')!);
-  renderForm(
-    appElement.querySelector<HTMLDivElement>('[id="add-location-card"]')!
-  );
-  renderTable(
-    appElement.querySelector<HTMLDivElement>('[id="locations-table"]')!
-  );
+  let hasVisited = localStorage.getItem("newUser");
+  let newUser = true;
+  if (hasVisited === null) {
+    let newUser = false;
+  }
+  console.log(newUser);
+  if (newUser) {
+    renderUserSurvey(
+      appElement.querySelector<HTMLDivElement>('[id="new-user-form"]')!
+    );
+  } else {
+    renderMap(appElement.querySelector<HTMLDivElement>('[id="map"]')!);
+    renderForm(
+      appElement.querySelector<HTMLDivElement>('[id="add-location-card"]')!
+    );
+    renderTable(
+      appElement.querySelector<HTMLDivElement>('[id="locations-table"]')!
+    );
+  }
 
   // 2. Trigger the initial load
   await LocationService.fetchAll();
