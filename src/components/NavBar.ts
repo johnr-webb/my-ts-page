@@ -4,43 +4,45 @@ import { setupThemeToggle } from "./Theme";
 
 const NavBar = (mount: HTMLElement) => {
   const navBarElement = mount;
-  navBarElement.className = "navbar";
 
   navBarElement.innerHTML = `
     <div class="nav-title">
-      <a href="#" id="home-link"><img src="${LogUrl}" alt="Housing Hunt Logo" class="logo"></a>
-      <h2 class="nav-title">Housing Hunt</h2>
+      <a href="/" class="logo"><img src="${LogUrl}" alt="Apartment Aid Logo" class="logo"></a>
+      <h3>Apartment Aide</h3>
     </div>
     <ul class="nav-items">
-      <li><p class="theme-btn">🌙</p></li>
-      <li><a href="#" id="compare-link">Compare Apartments</a></li>
-      <li><a href="#" id="find-link">Find</a></li>
+      <li><button class="nav-link" data-action="compare">Compare Apartments</button></li>
+      <li><button class="nav-link" data-action="find">Find New</button></li>
+      <li><button class="theme-toggle" aria-label="Toggle dark mode">🌙</button></li>  
     </ul>
   `;
 
   navBarElement
-    .querySelector<HTMLAnchorElement>("#home-link")!
+    .querySelector<HTMLAnchorElement>(".logo")!
     .addEventListener("click", (e) => {
       e.preventDefault();
       navigateTo("/");
     });
 
-  navBarElement
-    .querySelector<HTMLAnchorElement>("#compare-link")!
-    .addEventListener("click", (e) => {
-      e.preventDefault();
-      navigateTo("/compare");
+  document
+    .querySelector<HTMLUListElement>(".nav-items")
+    ?.addEventListener("click", (e) => {
+      const target = (e.target as HTMLElement).closest<HTMLElement>(
+        ".nav-link",
+      )!;
+      if (!target) return;
+      const action = target.dataset.action;
+      if (action === "compare") {
+        navigateTo("/compare");
+      }
+      if (action === "find") {
+        navigateTo("/find");
+      }
     });
 
-  navBarElement
-    .querySelector<HTMLAnchorElement>("#find-link")!
-    .addEventListener("click", (e) => {
-      e.preventDefault();
-      navigateTo("/find");
-    });
   // Setup theme toggle button
   const themeBtn =
-    navBarElement.querySelector<HTMLParagraphElement>(".theme-btn");
+    navBarElement.querySelector<HTMLButtonElement>(".theme-toggle");
   if (themeBtn) setupThemeToggle(themeBtn);
   return navBarElement;
 };

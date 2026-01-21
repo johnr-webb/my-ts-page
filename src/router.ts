@@ -11,9 +11,11 @@ export const routes = {
 export function navigateTo(path: keyof typeof routes = "/") {
   console.log(`Navigating to ${path}`);
   const renderPage = routes[path] ?? routes["/"];
-  const appElement = document.getElementById("app-wrap")!;
-  appElement.innerHTML = ""; // Clear existing content
-  renderPage(appElement); // Render the new page
+  const mainContent = document.querySelector<HTMLDivElement>(
+    '[class="main-content"]',
+  );
+  mainContent!.innerHTML = ""; // Clear existing content
+  renderPage(mainContent!); // Render the new page
 }
 
 export function setupRouting() {
