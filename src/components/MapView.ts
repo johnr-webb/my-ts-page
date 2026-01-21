@@ -11,35 +11,38 @@ let markerLibrary: any = null;
 let currentMarkers: any[] = [];
 
 export async function renderMap(mapElement: HTMLElement) {
-  try {
-    await loadGoogleMaps();
+  const render = async () => {
+    try {
+      await loadGoogleMaps();
 
-    // Import map and marker libraries
-    const { Map } = (await google.maps.importLibrary(
-      "maps"
-    )) as google.maps.MapsLibrary;
-    markerLibrary = await google.maps.importLibrary("marker");
-    // Initialize map element
-    mapInstance = new Map(mapElement, {
-      center: { lat: 41.894513, lng: -87.622876 },
-      zoom: 14,
-      mapId: "HOUSE_HUNTER_MAP",
-    });
+      // Import map and marker libraries
+      const { Map } = (await google.maps.importLibrary(
+        "maps",
+      )) as google.maps.MapsLibrary;
+      markerLibrary = await google.maps.importLibrary("marker");
+      // Initialize map element
+      mapInstance = new Map(mapElement, {
+        center: { lat: 41.894513, lng: -87.622876 },
+        zoom: 14,
+        mapId: "HOUSE_HUNTER_MAP",
+      });
 
-    const handleUpdate = (e: Event) => {
-      const locations = (e as CustomEvent<LocationItem[]>).detail;
-      updateMarkers(locations);
-    };
+      const handleUpdate = (e: Event) => {
+        const locations = (e as CustomEvent<LocationItem[]>).detail;
+        updateMarkers(locations);
+      };
 
-    window.addEventListener("locationsUpdated", handleUpdate);
+      window.addEventListener("locationsUpdated", handleUpdate);
 
-    const currentData = LocationService.getCurrent();
-    if (currentData.length > 0) {
-      updateMarkers(currentData);
+      const currentData = LocationService.getCurrent();
+      if (currentData.length > 0) {
+        updateMarkers(currentData);
+      }
+    } catch (error) {
+      console.error("Map failed to load:", error);
     }
-  } catch (error) {
-    console.error("Map failed to load:", error);
-  }
+  };
+  render();
 }
 
 /**

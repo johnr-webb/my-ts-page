@@ -49,7 +49,6 @@ export function renderUserSurvey(mount: HTMLElement) {
 
     setupEventListeners(mount, isLastStep);
   };
-
   render();
 }
 
@@ -71,7 +70,7 @@ function setupEventListeners(mount: HTMLElement, isLastStep: boolean) {
     e.preventDefault();
     const question = questions[currentStep];
     const input = mount.querySelector<HTMLInputElement | HTMLSelectElement>(
-      `#${question.id}`
+      `#${question.id}`,
     )!;
 
     // Save answer

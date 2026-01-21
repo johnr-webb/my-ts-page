@@ -3,11 +3,15 @@ import NavBar from "./components/NavBar";
 import { navigateTo, setupRouting, routes } from "./router";
 
 document.querySelector<HTMLDivElement>('[id="app"]')!.innerHTML = `
-  <div class="navbar"></div>
-  <div class="main-content"></div>
-  <div class="footer">
+  <header class="site-header">
+    <nav class="navbar"></nav>
+  </header>
+  <main class="site-main">
+    <div class="main-content"></div>
+  </main>
+  <footer class="site-footer">
     <p>This website is written and maintained by John Webb <a href="https://github.com/johnr-webb">Link to GitHub</a></p>
-  </div>
+  </footer>
 `;
 
 // Mount NavBar

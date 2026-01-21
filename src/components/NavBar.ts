@@ -8,7 +8,7 @@ const NavBar = (mount: HTMLElement) => {
   navBarElement.innerHTML = `
     <div class="nav-title">
       <a href="/" class="logo"><img src="${LogUrl}" alt="Apartment Aid Logo" class="logo"></a>
-      <h3>Apartment Aide</h3>
+      <h3>Apartment Aid</h3>
     </div>
     <ul class="nav-items">
       <li><button class="nav-link" data-action="compare">Compare Apartments</button></li>

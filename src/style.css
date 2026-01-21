@@ -50,6 +50,23 @@
   }
 }
 
+html[data-theme="light"] {
+  --color-background: #f3f4f6;
+  --color-surface: #ffffff;
+
+  --color-text-primary: #1f2937;
+  --color-text-muted: #6b7280;
+
+  --color-border: #e5e7eb;
+  --color-border-muted: #d1d5db;
+
+  --shadow-sm: 0 1px 2px rgba(31, 41, 55, 0.06);
+  --shadow-md:
+    0 4px 6px rgba(31, 41, 55, 0.08), 0 2px 4px rgba(31, 41, 55, 0.06);
+  --shadow-lg:
+    0 10px 15px rgba(31, 41, 55, 0.1), 0 4px 6px rgba(31, 41, 55, 0.08);
+}
+
 html[data-theme="dark"] {
   --color-background: #0f172a;
   --color-surface: #111827;
@@ -73,7 +90,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: var(--color-background);
+  background-color: var(--color-background);
   color: var(--color-text-primary);
   transition:
     background-color 0.4s,
@@ -82,8 +99,53 @@ body {
 
 /* App container */
 #app {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   margin: 0;
+}
+
+/* Layout Structure */
+.site-header {
+  flex-shrink: 0;
+}
+
+.site-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  contain: content;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Page Containers */
+.page-container {
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  flex: 1;
+}
+
+.page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Page Variants */
+.page-container--narrow {
+  max-width: 800px;
+}
+.page-container--wide {
+  max-width: 1400px;
+}
+.page-container--full {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 h1 {
@@ -98,7 +160,7 @@ h3 {
 a {
   padding: 0;
   margin: 0;
-  color: var(--accent);
+  color: var(--color-accent);
   text-decoration: none;
 }
 a:hover {
@@ -113,19 +175,20 @@ a:hover {
   padding: 2vh;
 }
 
-.footer {
+.site-footer {
   text-align: center;
   padding: 1rem;
   font-size: 0.9rem;
   color: var(--color-text-muted);
   background-color: var(--color-surface);
   border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
 input {
   padding: 0.5rem;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   background: var(--color-background);
   color: var(--color-text-primary);
   font-size: 1rem;
@@ -136,7 +199,7 @@ input {
 select {
   padding: 0.5rem;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border);
   background: var(--color-background);
   color: var(--color-text-primary);
   font-size: 1rem;

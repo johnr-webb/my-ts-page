@@ -6,37 +6,33 @@ import { renderUserSurvey } from "../components/NewUserForm";
 
 export async function renderComparePage(appElement: HTMLElement) {
   const content = `
-    <div class="compare-page">
-      <h1>Compare Apartments!</h1>
-      <p>
-        Please fill out the form below to get started.
-      </p>
-      <div id="new-user-form"></div>
-      <div id="map"></div>
-      <div id="add-location-card"></div>
-      <div id="locations-table"></div>
+    <div class="page-container page-container--wide">
+      <div class="page-content">
+        <h1>Compare Apartments!</h1>
+        <p>Please fill out the form below to get started.</p>
+        
+        <div class="new-user-form"></div>
+        <div class="map"></div>
+        <div class="add-location-card"></div>
+        <div class="locations-table"></div>
+      </div>
     </div>
   `;
 
   appElement.innerHTML = content;
   let hasVisited = localStorage.getItem("newUser");
-  let newUser = true;
-  if (hasVisited === null) {
-    let newUser = false;
-  }
-  console.log(newUser);
+  let newUser = hasVisited === null;
+
   if (newUser) {
+    console.log("New User! Rendering new user survey.");
     renderUserSurvey(
-      appElement.querySelector<HTMLDivElement>('[id="new-user-form"]')!
+      appElement.querySelector<HTMLDivElement>(".new-user-form")!,
     );
   } else {
-    renderMap(appElement.querySelector<HTMLDivElement>('[id="map"]')!);
-    renderForm(
-      appElement.querySelector<HTMLDivElement>('[id="add-location-card"]')!
-    );
-    renderTable(
-      appElement.querySelector<HTMLDivElement>('[id="locations-table"]')!
-    );
+    console.log("Old User! Rendering content directly.");
+    renderMap(appElement.querySelector<HTMLDivElement>(".map")!);
+    renderForm(appElement.querySelector<HTMLDivElement>(".add-location-card")!);
+    renderTable(appElement.querySelector<HTMLDivElement>(".locations-table")!);
   }
 
   // 2. Trigger the initial load
