@@ -1,8 +1,11 @@
 // src/services/UserService.ts
 
+import { AuthService } from "./AuthService";
+
 export interface UserProfile {
   id: string;
   name: string;
+  email: string;
   workAddress: string;
   workCoords?: { lat: number; lng: number };
 }
@@ -10,11 +13,17 @@ export interface UserProfile {
 let userProfile: UserProfile = {
   id: "",
   name: "",
+  email: "",
   workAddress: "",
 };
 
 export const UserService = {
-  async updateProfile(id: string, name: string, address: string) {
+  async updateProfile(
+    id: string,
+    name: string,
+    email: string,
+    address: string,
+  ) {
     const geocoder = new google.maps.Geocoder();
 
     try {
@@ -24,14 +33,21 @@ export const UserService = {
       userProfile = {
         id: id,
         name: name,
+        email: email,
         workAddress: address,
         workCoords: coords
           ? { lat: coords.lat(), lng: coords.lng() }
           : undefined,
       };
 
-      // Save to localStorage so they don't have to type it again on refresh
-      localStorage.setItem("house_hunter_user", JSON.stringify(userProfile));
+      // Save to localStorage with user-specific key
+      const currentUser = AuthService.getCurrentUser();
+      if (currentUser) {
+        localStorage.setItem(
+          `house_hunter_user_${currentUser.id}`,
+          JSON.stringify(userProfile),
+        );
+      }
 
       this.notify();
     } catch (e) {
@@ -40,17 +56,39 @@ export const UserService = {
   },
 
   getProfile() {
-    // Try to load from localStorage if the variable is empty
-    if (!userProfile.name) {
-      const saved = localStorage.getItem("house_hunter_user");
-      if (saved) userProfile = JSON.parse(saved);
+    // Get the current authenticated user
+    const currentUser = AuthService.getCurrentUser();
+    if (!currentUser) {
+      return {
+        id: "",
+        name: "",
+        email: "",
+        workAddress: "",
+      };
     }
+
+    // Try to load user-specific profile from localStorage
+    if (!userProfile.name || userProfile.email !== currentUser.email) {
+      const saved = localStorage.getItem(`house_hunter_user_${currentUser.id}`);
+      if (saved) {
+        userProfile = JSON.parse(saved);
+      } else {
+        // Initialize profile with auth user data
+        userProfile = {
+          id: currentUser.id,
+          name: currentUser.name,
+          email: currentUser.email,
+          workAddress: "",
+        };
+      }
+    }
+
     return userProfile;
   },
 
   notify() {
     window.dispatchEvent(
-      new CustomEvent("userUpdated", { detail: userProfile })
+      new CustomEvent("userUpdated", { detail: userProfile }),
     );
   },
 };

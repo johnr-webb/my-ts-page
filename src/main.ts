@@ -1,6 +1,7 @@
 import "./style.css";
 import NavBar from "./components/NavBar";
 import { navigateTo, setupRouting, routes } from "./router";
+import { AuthService } from "./services/AuthService";
 
 document.querySelector<HTMLDivElement>('[id="app"]')!.innerHTML = `
   <header class="site-header">
@@ -13,6 +14,9 @@ document.querySelector<HTMLDivElement>('[id="app"]')!.innerHTML = `
     <p>This website is written and maintained by John Webb <a href="https://github.com/johnr-webb">Link to GitHub</a></p>
   </footer>
 `;
+
+// Initialize authentication state
+AuthService.getCurrentUser();
 
 // Mount NavBar
 const navBarMount = document.querySelector<HTMLDivElement>('[class="navbar"]')!;

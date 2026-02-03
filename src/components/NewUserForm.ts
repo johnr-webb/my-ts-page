@@ -1,36 +1,55 @@
 import { type UserProfile, UserService } from "../services/UserService";
+import { AuthService } from "../services/AuthService";
+import { navigateTo } from "../router";
 
 let currentStep = 0;
 let answers: Partial<UserProfile> = {};
 
 const questions = [
   {
-    id: "name",
-    label: "What is your name?",
-    type: "text",
-    placeholder: "John Doe",
-  },
-  {
-    id: "email",
-    label: "What is your email?",
-    type: "text",
-    placeholder: "john.doe@gmail.com",
-  },
-  {
     id: "workAddress",
     label: "What is your work address?",
     type: "text",
-    placeholder: "insert address",
+    placeholder: "Enter your work address",
   },
 ];
 
 export function renderUserSurvey(mount: HTMLElement) {
+  // Check if user is authenticated
+  const currentUser = AuthService.getCurrentUser();
+  if (!currentUser) {
+    mount.innerHTML = `
+      <div class="survey-container">
+        <p>Please sign in to set up your profile</p>
+        <button id="signin-redirect-btn">Sign In</button>
+      </div>
+    `;
+
+    // Add event listener for sign in redirect
+    const signinBtn = mount.querySelector("#signin-redirect-btn");
+    if (signinBtn) {
+      signinBtn.addEventListener("click", () => navigateTo("/signin"));
+    }
+    return;
+  }
+
+  // Initialize answers with user data
+  if (Object.keys(answers).length === 0) {
+    answers = {
+      id: currentUser.id,
+      name: currentUser.name,
+      email: currentUser.email,
+    };
+  }
+
   const render = () => {
     const question = questions[currentStep];
     const isLastStep = currentStep === questions.length - 1;
 
     mount.innerHTML = `
       <div class="survey-container">
+        <h2>Complete Your Profile</h2>
+        <p>Hi ${currentUser.name}! Let's set up your work location to help you find the perfect apartment.</p>
         <p>Question ${currentStep + 1} of ${questions.length}</p>
         <form id="survey-form">
           <label>${question.label}</label>
@@ -41,7 +60,7 @@ export function renderUserSurvey(mount: HTMLElement) {
                 ? '<button type="button" id="prev-btn">Back</button>'
                 : ""
             }
-            <button type="submit">${isLastStep ? "Finish" : "Next"}</button>
+            <button type="submit">${isLastStep ? "Complete Setup" : "Next"}</button>
           </div>
         </form>
       </div>
@@ -91,11 +110,20 @@ function setupEventListeners(mount: HTMLElement, isLastStep: boolean) {
 }
 
 function handleFinalSubmit() {
-  console.log("Survey Complete:", answers);
-  localStorage.setItem("hasVisited", "yes");
-  // TODO!
+  console.log("Profile setup complete:", answers);
 
-  // 1. Save to a UserPreferencesService
-  // 2. Change the window.location.hash to '#compare'
-  window.location.hash = "#compare";
+  // Update the user profile with work address
+  if (answers.id && answers.name && answers.email && answers.workAddress) {
+    UserService.updateProfile(
+      answers.id,
+      answers.name,
+      answers.email,
+      answers.workAddress,
+    );
+  }
+
+  localStorage.setItem("hasCompletedProfile", "yes");
+
+  // Navigate to compare page
+  navigateTo("/compare");
 }

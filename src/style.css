@@ -361,3 +361,262 @@ button:active {
 .marker.highrise {
   border-color: #0e00d3;
 }
+
+/* Authentication Styles */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  padding: 2rem;
+}
+
+.auth-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-card h1 {
+  color: var(--color-text-primary);
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.auth-subtitle {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.form-group input {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text-primary);
+  font-size: var(--min-font);
+  padding: 0.75rem;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.form-group input:focus {
+  border-color: var(--color-border-active);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-group input.error {
+  border-color: #ef4444;
+}
+
+.form-group input.error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-error {
+  color: #ef4444;
+  font-size: 0.75rem;
+  display: none;
+}
+
+.form-success {
+  color: var(--color-accent);
+  font-size: 0.875rem;
+  display: none;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.auth-button {
+  background: var(--color-accent);
+  border: none;
+  border-radius: var(--radius);
+  color: white;
+  cursor: pointer;
+  font-size: var(--min-font);
+  font-weight: 600;
+  padding: 0.875rem;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
+  margin-top: 0.5rem;
+}
+
+.auth-button:hover:not(:disabled) {
+  background: #059669;
+}
+
+.auth-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.auth-switch p {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.link-button:hover {
+  color: #059669;
+}
+
+/* Navigation User Styles */
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-greeting {
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Home Page Styles */
+.welcome-back,
+.auth-prompt {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.welcome-back h2,
+.auth-prompt h2 {
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+}
+
+.home-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.primary-button,
+.secondary-button {
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: var(--min-font);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s;
+}
+
+.primary-button {
+  background: var(--color-accent);
+  color: white;
+}
+
+.primary-button:hover {
+  background: #059669;
+}
+
+.secondary-button {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.secondary-button:hover {
+  background: var(--color-background);
+}
+
+.features {
+  margin-top: 2rem;
+}
+
+.features h3 {
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+}
+
+.features ul {
+  color: var(--color-text-muted);
+  list-style: none;
+  padding: 0;
+}
+
+.features li {
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+/* Survey/Profile Setup Styles */
+.survey-container h2 {
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .auth-container {
+    padding: 1rem;
+  }
+
+  .auth-card {
+    padding: 2rem;
+  }
+
+  .home-actions {
+    flex-direction: column;
+  }
+
+  .nav-user {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .user-greeting {
+    font-size: 0.75rem;
+  }
+}
