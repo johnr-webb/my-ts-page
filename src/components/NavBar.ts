@@ -19,7 +19,7 @@ const NavBar = (mount: HTMLElement) => {
       </div>
       <ul class="nav-items">
         <li><button class="nav-link" data-action="compare">Compare Apartments</button></li>
-        <li><button class="nav-link" data-action="find">Find New</button></li>
+        <li><button class="nav-link" data-action="find">Find New (Soon)</button></li>
         ${
           isAuthenticated
             ? `

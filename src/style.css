@@ -620,3 +620,55 @@ button:active {
     font-size: 0.75rem;
   }
 }
+
+/* Coming Soon Page Styles */
+.coming-soon {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.coming-soon h1 {
+  color: var(--color-primary, #3f3d56);
+  margin-bottom: 1rem;
+}
+
+.coming-soon-actions {
+  margin: 2rem 0;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.how-it-works {
+  text-align: left;
+  background: var(--color-surface, #ffffff);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+  border: 1px solid var(--color-border, #e5e7eb);
+}
+
+.how-it-works h3 {
+  margin-bottom: 1rem;
+  color: var(--color-text-primary, #1f2937);
+}
+
+.how-it-works ol {
+  line-height: 1.8;
+}
+
+/* Navigation - Coming Soon Indicator */
+.nav-link[data-action="find"] {
+  opacity: 0.7;
+  position: relative;
+}
+
+.nav-link[data-action="find"]:after {
+  content: "🚧";
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 0.8em;
+}

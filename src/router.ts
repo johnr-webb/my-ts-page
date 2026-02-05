@@ -14,7 +14,7 @@ export const routes = {
 };
 
 // Define protected routes that require authentication
-const protectedRoutes = ["/compare", "/find"];
+const protectedRoutes = ["/compare"];
 
 // Store intended destination for post-login redirect
 let intendedDestination: string | null = null;
