@@ -1,6 +1,6 @@
 // src/pages/signin.ts
 
-import { AuthService } from "../services/AuthService";
+import { AuthServiceInstance } from "../services/AuthService";
 import {
   navigateTo,
   getIntendedDestination,
@@ -80,7 +80,7 @@ function setupSignInEventListeners() {
     setLoadingState(true);
 
     try {
-      const result = await AuthService.signIn(email);
+      const result = await AuthServiceInstance.signIn(email);
 
       if (result.success) {
         showSuccess(`Welcome back, ${result.user?.name}! Redirecting...`);

@@ -1,6 +1,8 @@
 // src/services/UserService.ts
 
-import { AuthService } from "./AuthService";
+import { BaseService } from '../base/BaseService';
+import { AuthServiceInstance } from "./AuthService";
+
 
 export interface UserProfile {
   id: string;
@@ -10,27 +12,39 @@ export interface UserProfile {
   workCoords?: { lat: number; lng: number };
 }
 
-let userProfile: UserProfile = {
-  id: "",
-  name: "",
-  email: "",
-  workAddress: "",
-};
+export class UserService extends BaseService {
+  private static instance: UserService;
+  private userProfile: UserProfile = {
+    id: "",
+    name: "",
+    email: "",
+    workAddress: "",
+  };
 
-export const UserService = {
+  private constructor() {
+    super();
+  }
+
+  static getInstance(): UserService {
+    if (!UserService.instance) {
+      UserService.instance = new UserService();
+    }
+    return UserService.instance;
+  }
+
   async updateProfile(
     id: string,
     name: string,
     email: string,
     address: string,
-  ) {
+  ): Promise<void> {
     const geocoder = new google.maps.Geocoder();
 
     try {
       const result = await geocoder.geocode({ address });
       const coords = result.results[0]?.geometry.location;
 
-      userProfile = {
+      this.userProfile = {
         id: id,
         name: name,
         email: email,
@@ -41,23 +55,23 @@ export const UserService = {
       };
 
       // Save to localStorage with user-specific key
-      const currentUser = AuthService.getCurrentUser();
+      const currentUser = AuthServiceInstance.getCurrentUser();
       if (currentUser) {
         localStorage.setItem(
           `house_hunter_user_${currentUser.id}`,
-          JSON.stringify(userProfile),
+          JSON.stringify(this.userProfile),
         );
       }
 
       this.notify();
-    } catch (e) {
-      console.error("Failed to geocode work address", e);
+    } catch (error) {
+      this.handleError(error, 'updateProfile');
     }
-  },
+  }
 
-  getProfile() {
+  getProfile(): UserProfile {
     // Get the current authenticated user
-    const currentUser = AuthService.getCurrentUser();
+    const currentUser = AuthServiceInstance.getCurrentUser();
     if (!currentUser) {
       return {
         id: "",
@@ -68,13 +82,23 @@ export const UserService = {
     }
 
     // Try to load user-specific profile from localStorage
-    if (!userProfile.name || userProfile.email !== currentUser.email) {
+    if (!this.userProfile.name || this.userProfile.email !== currentUser.email) {
       const saved = localStorage.getItem(`house_hunter_user_${currentUser.id}`);
       if (saved) {
-        userProfile = JSON.parse(saved);
+        try {
+          this.userProfile = JSON.parse(saved);
+        } catch (error) {
+          this.handleError(error, 'getProfile');
+          this.userProfile = {
+            id: currentUser.id,
+            name: currentUser.name,
+            email: currentUser.email,
+            workAddress: "",
+          };
+        }
       } else {
         // Initialize profile with auth user data
-        userProfile = {
+        this.userProfile = {
           id: currentUser.id,
           name: currentUser.name,
           email: currentUser.email,
@@ -83,12 +107,16 @@ export const UserService = {
       }
     }
 
-    return userProfile;
-  },
+    return this.userProfile;
+  }
 
-  notify() {
-    window.dispatchEvent(
-      new CustomEvent("userUpdated", { detail: userProfile }),
-    );
-  },
-};
+  private notify(): void {
+    this.dispatchEvent('authStateChanged', {
+      user: this.userProfile,
+      isAuthenticated: true
+    });
+  }
+}
+
+// Export singleton instance for backward compatibility
+export const UserServiceInstance = UserService.getInstance();

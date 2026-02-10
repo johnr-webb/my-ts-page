@@ -1,6 +1,6 @@
 // src/pages/signup.ts
 
-import { AuthService } from "../services/AuthService";
+import { AuthServiceInstance } from "../services/AuthService";
 import {
   navigateTo,
   getIntendedDestination,
@@ -107,7 +107,7 @@ function setupSignUpEventListeners() {
     setLoadingState(true);
 
     try {
-      const result = await AuthService.signUp(name, email);
+      const result = await AuthServiceInstance.signUp(name, email);
 
       if (result.success) {
         showSuccess("Account created successfully! Redirecting...");

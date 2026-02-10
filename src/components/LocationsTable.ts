@@ -1,6 +1,6 @@
 import {
   type LocationItem,
-  LocationService,
+  LocationServiceInstance,
 } from "../services/LocationsService";
 
 export function renderTable(mount: HTMLElement) {
@@ -51,7 +51,7 @@ export function renderTable(mount: HTMLElement) {
       btn.addEventListener("click", (e) => {
         const id = (e.target as HTMLButtonElement).dataset.id;
         if (id) {
-          LocationService.remove(id);
+          LocationServiceInstance.remove(id);
         }
       });
     });
@@ -64,6 +64,6 @@ export function renderTable(mount: HTMLElement) {
 
   window.addEventListener("locationsUpdated", handleUpdate);
 
-  const currentData = LocationService.getCurrent();
+  const currentData = LocationServiceInstance.getCurrent();
   updateRows(currentData);
 }

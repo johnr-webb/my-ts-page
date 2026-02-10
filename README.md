@@ -10,11 +10,15 @@ A TypeScript single-page application for exploring and comparing apartment locat
 
 - **🗺️ Interactive Map Visualization** - Google Maps integration with custom markers for different location types
 - **📍 Smart Geocoding** - Add locations by address with automatic coordinate resolution
-- **💾 Local Data Persistence** - Save and manage your location list across browser sessions
+- **🏠 Enhanced Property Details** - Comprehensive property information including rent, square footage, bedrooms, bathrooms, and amenities
+- **⭐ Amenity Ratings** - Rate and compare gym, pool, and outdoor space quality with star ratings
+- **🚗 Travel Time Calculations** - Automatic calculation of walking, driving, and transit times from work address
+- **📊 Advanced Analytics & Scoring** - Intelligent scoring system with commute, cost, amenity, and size analysis
+- **🔧 Flexible Table Views** - Customizable columns, sorting, filtering, and export capabilities
+- **💾 Local Data Persistence** - Save and manage your location list across browser sessions with intelligent caching
 - **🎨 Theme Support** - Light/dark mode with CSS custom properties
-- **📱 Responsive Design** - Mobile-first design that works on all devices
+- **📱 Responsive Design** - Mobile-first design that works on all devices with touch-friendly controls
 - **👤 User Profiles** - Track work addresses and personal preferences
-- **📊 Location Comparison** - Tabular view for easy location comparison
 - **🧭 Smart Routing** - Client-side navigation with history support
 
 ## 🚀 Quick Start
@@ -72,17 +76,28 @@ npm run preview
 ### Adding Your First Location
 
 1. Navigate to the **Compare** page
-2. Fill out the "Add Location" form:
-   - **Name**: Give your location a memorable name
-   - **Address**: Enter the full address (will be geocoded automatically)
-   - **Type**: Choose from Apartment, House, Condo, etc.
-3. Click "Add Location" to save and see it appear on the map
+2. Fill out the comprehensive "Add Location" form:
+   - **Basic Info**: Name, Address, Type, Rent, Square Footage, Bedrooms, Bathrooms
+   - **Amenities**: Rate gym, pool, and outdoor space (1-5 stars)
+   - **Additional**: Parking, laundry options, pet policy, and description
+3. Click "Add Location" to save and see it appear with automatic travel time calculations
 
 ### Managing Locations
 
-- **View all locations** in the interactive table below the map
+- **View all locations** in the flexible, customizable comparison table
+- **Customize columns** - show/hide specific data points, reorder as needed
+- **Sort and filter** by any column (price, distance, amenities, etc.)
+- **Export data** to CSV for external analysis
 - **Delete locations** using the remove button in the table
-- **Location data persists** automatically in your browser's local storage
+- **Analyze scores** - view automated analytics with weighted scoring system
+- **Location data persists** automatically with intelligent caching and travel time optimization
+
+### Using Analytics & Scoring
+
+- **View analytics panel** with comprehensive insights and recommendations
+- **Adjust score weights** - customize importance of commute vs cost vs amenities
+- **Compare locations** using color-coded scores (green/yellow/red)
+- **See top recommendations** automatically highlighted based on your preferences
 
 ### Setting Up Your Profile
 
@@ -95,20 +110,35 @@ npm run preview
 ```
 src/
 ├── components/          # Reusable UI components
-│   ├── AddLocationForm.ts    # Location input form
-│   ├── LocationsTable.ts     # Data table for locations
-│   ├── MapView.ts           # Google Maps integration
-│   ├── NavBar.ts            # Navigation with theme toggle
-│   ├── NewUserForm.ts       # User onboarding
-│   └── Theme.ts             # Theme management
+│   ├── EnhancedAddLocationForm.ts  # Comprehensive location input form
+│   ├── FlexibleTable.ts            # Customizable comparison table
+│   ├── ColumnManager.ts            # Column configuration and presets
+│   ├── AnalyticsDisplay.ts         # Analytics panel and scoring display
+│   ├── ColumnConfig.ts             # Column definitions and configurations
+│   ├── LocationsTable.ts           # Legacy data table (backward compatibility)
+│   ├── MapView.ts                  # Google Maps integration
+│   ├── NavBar.ts                   # Navigation with theme toggle
+│   ├── NewUserForm.ts              # User onboarding
+│   ├── AddLocationForm.ts          # Basic location form (legacy)
+│   └── Theme.ts                    # Theme management
 ├── pages/               # Route handlers
 │   ├── home.ts              # Landing page
-│   ├── compare.ts           # Main application view
+│   ├── compare.ts           # Enhanced comparison interface
 │   └── find.ts              # Search functionality
 ├── services/            # Business logic
-│   ├── GoogleMapsService.ts  # Maps API integration
-│   ├── LocationsService.ts   # Location management
-│   └── UserService.ts        # User profile handling
+│   ├── AnalyticsEngine.ts         # Extensible analytics and scoring system
+│   ├── TravelTimeService.ts       # Google Distance Matrix API integration
+│   ├── TravelTimeCache.ts         # Travel time caching service
+│   ├── TravelTimeIntegration.ts   # Travel time automation and events
+│   ├── LocationValidator.ts       # Form validation and sanitization
+│   ├── GoogleMapsService.ts       # Maps API integration
+│   ├── LocationsService.ts        # Enhanced location management
+│   ├── UserService.ts              # User profile handling
+│   └── AuthService.ts              # Authentication service
+├── types/               # TypeScript type definitions
+│   └── ComparisonTypes.ts         # Enhanced location interfaces and types
+├── utils/               # Utility functions
+│   └── Calculators.ts              # Scoring algorithms and calculations
 ├── router.ts            # Client-side routing
 ├── main.ts             # Application entry point
 └── style.css           # Global styles and CSS custom properties
@@ -169,7 +199,7 @@ await locationService.addLocation({
 
 | Variable                   | Description                                      | Required |
 | -------------------------- | ------------------------------------------------ | -------- |
-| `VITE_GOOGLE_MAPS_API_KEY` | Google Maps API key with Places & Geocoding APIs | ✅       |
+| `VITE_GOOGLE_MAPS_API_KEY` | Google Maps API key with Places, Geocoding, and Distance Matrix APIs | ✅       |
 
 ## 🤖 AI Development Support
 
@@ -181,19 +211,61 @@ This project includes comprehensive AI assistant configuration:
 
 ## 📚 API Documentation
 
-### LocationsService
+### Enhanced Services
 
-Main service for managing apartment locations:
+**LocationsService** - Enhanced location management with comprehensive property data:
 
 ```typescript
-// Add a new location
-await locationService.addLocation(locationData);
+// Add an enhanced location with full details
+await locationService.addLocation({
+  name: "Modern Apartment",
+  address: "123 Main St",
+  type: "apartment",
+  rent: 250000, // in cents
+  squareFootage: 850,
+  bedrooms: 2,
+  bathrooms: 2,
+  amenities: {
+    gym: { has: true, rating: 4 },
+    pool: { has: true, rating: 3 },
+    outdoorSpace: { has: false },
+    parking: true,
+    laundry: "in-unit",
+    pets: true
+  }
+});
 
-// Get all saved locations
-const locations = locationService.getAllLocations();
+// Get enhanced locations with travel times
+const locations = locationService.getCurrent() as EnhancedLocationItem[];
+```
 
-// Remove a location
-locationService.removeLocation(locationId);
+**AnalyticsEngine** - Extensible scoring and analysis system:
+
+```typescript
+// Calculate scores for locations
+const analyticsEngine = AnalyticsEngine.getInstance();
+const results = await analyticsEngine.calculateScores(locations, {
+  commuteWeight: 0.4,
+  costWeight: 0.3,
+  amenityWeight: 0.2,
+  sizeWeight: 0.1
+});
+
+// Get insights and recommendations
+const insights = results.insights;
+const recommendations = results.recommendations;
+```
+
+**TravelTimeService** - Automatic travel time calculations:
+
+```typescript
+// Calculate travel times from work to locations
+const travelService = TravelTimeService.getInstance();
+const travelTimes = await travelService.calculateTravelTimes(
+  workCoordinates,
+  locationCoordinates,
+  ['walking', 'driving', 'transit']
+);
 ```
 
 ### GoogleMapsService

@@ -1,13 +1,13 @@
 import { renderHomePage } from "./pages/home.ts";
-import { renderComparePage } from "./pages/compare.ts";
+import { renderEnhancedComparePage } from "./pages/compare.ts";
 import { renderFindPage } from "./pages/find.ts";
 import { renderSignUpPage } from "./pages/signup.ts";
 import { renderSignInPage } from "./pages/signin.ts";
-import { AuthService } from "./services/AuthService.ts";
+import { AuthServiceInstance } from "./services/AuthService.ts";
 
 export const routes = {
   "/": renderHomePage,
-  "/compare": renderComparePage,
+  "/compare": renderEnhancedComparePage,
   "/find": renderFindPage,
   "/signup": renderSignUpPage,
   "/signin": renderSignInPage,
@@ -23,22 +23,24 @@ export function navigateTo(path: keyof typeof routes = "/") {
   console.log(`Navigating to ${path}`);
 
   // Check if route requires authentication
-  if (protectedRoutes.includes(path) && !AuthService.isAuthenticated()) {
+  if (protectedRoutes.includes(path) && !AuthServiceInstance.isAuthenticated()) {
     // Store intended destination and redirect to signin
     intendedDestination = path;
     const renderPage = routes["/signin"];
     const mainContent = document.querySelector<HTMLDivElement>(
       '[class="main-content"]',
     );
-    mainContent!.innerHTML = ""; // Clear existing content
-    renderPage(mainContent!);
+    if (mainContent) {
+      mainContent.innerHTML = ""; // Clear existing content
+      renderPage(mainContent);
+    }
     return;
   }
 
   // If user is authenticated and tries to access auth pages, redirect to compare
   if (
     (path === "/signin" || path === "/signup") &&
-    AuthService.isAuthenticated()
+    AuthServiceInstance.isAuthenticated()
   ) {
     path = "/compare";
   }
@@ -47,8 +49,10 @@ export function navigateTo(path: keyof typeof routes = "/") {
   const mainContent = document.querySelector<HTMLDivElement>(
     '[class="main-content"]',
   );
-  mainContent!.innerHTML = ""; // Clear existing content
-  renderPage(mainContent!); // Render the new page
+  if (mainContent) {
+    mainContent.innerHTML = ""; // Clear existing content
+    renderPage(mainContent); // Render the new page
+  }
 }
 
 export function getIntendedDestination(): string | null {

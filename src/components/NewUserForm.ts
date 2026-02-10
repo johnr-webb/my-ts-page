@@ -1,5 +1,5 @@
-import { type UserProfile, UserService } from "../services/UserService";
-import { AuthService } from "../services/AuthService";
+import { type UserProfile, UserServiceInstance } from "../services/UserService";
+import { AuthServiceInstance } from "../services/AuthService";
 import { navigateTo } from "../router";
 
 let currentStep = 0;
@@ -16,7 +16,7 @@ const questions = [
 
 export function renderUserSurvey(mount: HTMLElement) {
   // Check if user is authenticated
-  const currentUser = AuthService.getCurrentUser();
+  const currentUser = AuthServiceInstance.getCurrentUser();
   if (!currentUser) {
     mount.innerHTML = `
       <div class="survey-container">
@@ -114,7 +114,7 @@ function handleFinalSubmit() {
 
   // Update the user profile with work address
   if (answers.id && answers.name && answers.email && answers.workAddress) {
-    UserService.updateProfile(
+    UserServiceInstance.updateProfile(
       answers.id,
       answers.name,
       answers.email,

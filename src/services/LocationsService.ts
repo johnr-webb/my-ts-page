@@ -1,5 +1,8 @@
 // services/LocationService.ts
-import { UserService } from "./UserService";
+import { BaseService } from '../base/BaseService';
+import { UserServiceInstance } from "./UserService";
+import type { EnhancedLocationItem } from '../types/ComparisonTypes';
+
 
 export interface LocationItem {
   id: string;
@@ -12,26 +15,43 @@ export interface LocationItem {
   };
 }
 
-let allLocations: LocationItem[] = [];
-
 export const MARKERCONS = {
   walkup: "🏠",
   highrise: "🏢",
   work: "💼",
 };
 
-export const LocationService = {
-  async fetchAll() {
-    const baseUrl = new URL(import.meta.env.BASE_URL, window.location.origin);
-    const dataUrl = new URL("data/locations.json", baseUrl);
+export class LocationService extends BaseService {
+  private static instance: LocationService;
+  private allLocations: LocationItem[] = [];
 
-    const response = await fetch(dataUrl.href);
-    allLocations = await response.json();
-    this.notify();
-    return allLocations;
-  },
+  private constructor() {
+    super();
+  }
 
-  async addByAddress(name: string, address: string, type: string = "walkup") {
+  static getInstance(): LocationService {
+    if (!LocationService.instance) {
+      LocationService.instance = new LocationService();
+    }
+    return LocationService.instance;
+  }
+
+  async fetchAll(): Promise<LocationItem[]> {
+    try {
+      const baseUrl = new URL(import.meta.env.BASE_URL, window.location.origin);
+      const dataUrl = new URL("data/locations.json", baseUrl);
+
+      const response = await fetch(dataUrl.href);
+      this.allLocations = await response.json();
+      this.notify();
+      return this.allLocations;
+    } catch (error) {
+      this.handleError(error, 'fetchAll');
+      return [];
+    }
+  }
+
+  async addByAddress(name: string, address: string, type: string = "walkup"): Promise<void> {
     const geocoder = new google.maps.Geocoder();
 
     try {
@@ -39,7 +59,7 @@ export const LocationService = {
 
       if (result.results && result.results[0]) {
         const location = result.results[0].geometry.location;
-        const user = UserService.getProfile();
+        const user = UserServiceInstance.getProfile();
         const newLocation: LocationItem = {
           id: crypto.randomUUID(),
           userId: user.id,
@@ -54,41 +74,45 @@ export const LocationService = {
       } else {
         alert("Location not found. Try a more specific address.");
       }
-    } catch (e) {
-      console.error("Geocoding failed:", e);
+    } catch (error) {
+      this.handleError(error, 'addByAddress');
       alert("Error connecting to Google Geocoding service.");
     }
-  },
+  }
 
-  add(loc: LocationItem) {
-    allLocations.push(loc);
-    // Save to localStorage or DB here
+  add(loc: LocationItem): void {
+    this.allLocations.push(loc);
     this.notify();
-  },
+  }
 
-  patch(id: string, updatedFields: Partial<LocationItem>) {
-    allLocations = allLocations.map((loc) =>
+  patch(id: string, updatedFields: Partial<LocationItem> | Partial<EnhancedLocationItem>): void {
+    this.allLocations = this.allLocations.map((loc) =>
       loc.id === id ? { ...loc, ...updatedFields } : loc
     );
     this.notify();
-  },
+  }
 
-  remove(id: string) {
-    allLocations = allLocations.filter((loc) => loc.id !== id);
+  remove(id: string): void {
+    this.allLocations = this.allLocations.filter((loc) => loc.id !== id);
     this.notify();
-  },
+  }
 
-  notify() {
-    window.dispatchEvent(
-      new CustomEvent("locationsUpdated", { detail: allLocations })
-    );
-  },
+  getCurrent(): LocationItem[] {
+    const user = UserServiceInstance.getProfile();
+    return this.allLocations.filter((loc) => loc.userId === user.id);
+  }
 
-  getCurrent() {
-    const user = UserService.getProfile();
-    return allLocations.filter((loc) => loc.userId === user.id);
-  },
-};
+  getAll(): LocationItem[] {
+    return [...this.allLocations];
+  }
+
+  private notify(): void {
+    this.dispatchEvent('locationsUpdated', this.allLocations);
+  }
+}
+
+// Export singleton instance for backward compatibility
+export const LocationServiceInstance = LocationService.getInstance();
 
 /*
 async function fetchLocations(): Promise<LocationItem[]> {

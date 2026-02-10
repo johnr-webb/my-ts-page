@@ -1,75 +1,112 @@
-import { AuthService } from "../services/AuthService";
+import { AuthServiceInstance } from "../services/AuthService";
 import { navigateTo } from "../router";
 
-export function renderHomePage(contentElement: HTMLElement) {
-  const isAuthenticated = AuthService.isAuthenticated();
-  const currentUser = AuthService.getCurrentUser();
+export class HomePage {
+  private element: HTMLElement;
+  private isDestroyed = false;
 
-  const content = `
-    <div class="page-container">
-      <div class="page-content">
-        <h1>Welcome to Housing Hunt</h1>
-        <p>Your one-stop solution for finding and comparing apartments.</p>
-        
-        ${
-          isAuthenticated
-            ? `
-          <div class="welcome-back">
-            <h2>Welcome back, ${currentUser?.name}!</h2>
-            <p>Ready to continue your apartment hunt?</p>
-            <div class="home-actions">
-              <button class="primary-button" id="compare-btn">
-                Compare Apartments
-              </button>
-              <button class="secondary-button" id="find-btn">
-                Find New Apartments
-              </button>
+  constructor(contentElement: HTMLElement) {
+    this.element = contentElement;
+  }
+
+  private handleError(error: Error | unknown, context: string): void {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(`[HomePage] ${context}:`, error);
+    
+    // Show user-friendly error message
+    if (context.includes('navigation')) {
+      const errorElement = document.createElement('div');
+      errorElement.className = 'error-toast';
+      errorElement.textContent = `Navigation failed: ${errorMessage}`;
+      document.body.appendChild(errorElement);
+      setTimeout(() => document.body.removeChild(errorElement), 3000);
+    }
+  }
+
+  render(): void {
+    const isAuthenticated = AuthServiceInstance.isAuthenticated();
+    const currentUser = AuthServiceInstance.getCurrentUser();
+
+    const content = `
+      <div class="page-container">
+        <div class="page-content">
+          <h1>Welcome to Housing Hunt</h1>
+          <p>Your one-stop solution for finding and comparing apartments.</p>
+          
+          ${
+            isAuthenticated
+              ? `
+            <div class="welcome-back">
+              <h2>Welcome back, ${currentUser?.name}!</h2>
+              <p>Ready to continue your apartment hunt?</p>
+              <div class="home-actions">
+                <button class="btn-primary" data-action="compare">
+                  🏠 Compare Apartments
+                </button>
+                <button class="btn-secondary" data-action="find">
+                  🔍 Find New Places
+                </button>
+              </div>
             </div>
-          </div>
-        `
-            : `
-          <div class="auth-prompt">
-            <h2>Get Started</h2>
-            <p>Sign up to save your favorite apartments and get personalized recommendations.</p>
-            <div class="home-actions">
-              <button class="primary-button" id="signup-btn">
-                Create Account
-              </button>
-              <button class="secondary-button" id="signin-btn">
-                Sign In
-              </button>
+          `
+              : `
+            <div class="welcome-section">
+              <h2>Start Your Apartment Hunt</h2>
+              <p>Sign up to save and compare your favorite places.</p>
+              <div class="home-actions">
+                <button class="btn-primary" data-action="compare">
+                  🏠 Browse Listings
+                </button>
+                <button class="btn-secondary" data-action="signup">
+                  📝 Create Account
+                </button>
+              </div>
             </div>
-          </div>
-        `
-        }
-        
-        <div class="features">
-          <h3>Features</h3>
-          <ul>
-            <li>📍 Interactive map with apartment locations</li>
-            <li>🏠 Save and compare your favorite apartments</li>
-            <li>🗺️ Calculate commute times to work</li>
-            <li>💾 Your data saved locally and securely</li>
-          </ul>
+          `
+          }
         </div>
       </div>
-    </div>
-  `;
-  contentElement.innerHTML = content;
-  setupHomeEventListeners();
+    `;
+
+    this.element.innerHTML = content;
+    this.setupEventListeners();
+  }
+
+  private setupEventListeners(): void {
+    this.element.addEventListener('click', this.handleActionClick.bind(this));
+  }
+
+  private handleActionClick(event: Event): void {
+    if (this.isDestroyed) return;
+    
+    try {
+      const target = event.target as HTMLElement;
+      const action = target.dataset.action;
+
+      switch (action) {
+        case 'compare':
+          navigateTo("/compare");
+          break;
+        case 'find':
+          navigateTo("/find");
+          break;
+        case 'signup':
+          navigateTo("/signup");
+          break;
+      }
+    } catch (error) {
+      this.handleError(error, 'navigation');
+    }
+  }
+
+  public destroy(): void {
+    this.isDestroyed = true;
+  }
 }
 
-function setupHomeEventListeners() {
-  // Navigation buttons for authenticated users
-  const compareBtn = document.getElementById("compare-btn");
-  const findBtn = document.getElementById("find-btn");
-
-  // Auth buttons for unauthenticated users
-  const signupBtn = document.getElementById("signup-btn");
-  const signinBtn = document.getElementById("signin-btn");
-
-  compareBtn?.addEventListener("click", () => navigateTo("/compare"));
-  findBtn?.addEventListener("click", () => navigateTo("/find"));
-  signupBtn?.addEventListener("click", () => navigateTo("/signup"));
-  signinBtn?.addEventListener("click", () => navigateTo("/signin"));
+// Export factory function for backward compatibility
+export function renderHomePage(contentElement: HTMLElement): HomePage {
+  const homePage = new HomePage(contentElement);
+  homePage.render();
+  return homePage;
 }

@@ -1,18 +1,18 @@
+import { BaseComponent } from '../base/BaseComponent';
 import LogUrl from "../assets/logo.png";
 import { navigateTo } from "../router";
 import { setupThemeToggle } from "./Theme";
-import { AuthService } from "../services/AuthService";
+import { AuthServiceInstance } from "../services/AuthService";
 
-const NavBar = (mount: HTMLElement) => {
-  const navBarElement = mount;
-  let currentEventController: AbortController | null = null;
-  let authStateController: AbortController | null = null;
 
-  const renderNavBar = () => {
-    const isAuthenticated = AuthService.isAuthenticated();
-    const currentUser = AuthService.getCurrentUser();
+export class NavBar extends BaseComponent {
+  private authStateController: AbortController | null = null;
 
-    navBarElement.innerHTML = `
+  protected render(): void {
+    const isAuthenticated = AuthServiceInstance.isAuthenticated();
+    const currentUser = AuthServiceInstance.getCurrentUser();
+
+    this.element.innerHTML = `
       <div class="nav-title">
         <a href="/" class="logo"><img src="${LogUrl}" alt="Apartment Aid Logo" class="logo"></a>
         <h3>Apartment Aid</h3>
@@ -36,91 +36,87 @@ const NavBar = (mount: HTMLElement) => {
         <li><button class="theme-toggle" aria-label="Toggle dark mode">🌙</button></li>  
       </ul>
     `;
+  }
 
-    setupEventListeners();
-  };
+  protected setupEventListeners(): void {
+    super.setupEventListeners();
 
-  const setupEventListeners = () => {
-    // Clean up previous event listeners
-    if (currentEventController) {
-      currentEventController.abort();
-    }
-    currentEventController = new AbortController();
-
-    navBarElement.querySelector<HTMLAnchorElement>(".logo")!.addEventListener(
-      "click",
-      (e) => {
-        e.preventDefault();
-        navigateTo("/");
-      },
-      { signal: currentEventController.signal },
-    );
-
-    document.querySelector<HTMLUListElement>(".nav-items")?.addEventListener(
-      "click",
-      (e) => {
-        const target = (e.target as HTMLElement).closest<HTMLElement>(
-          ".nav-link",
-        )!;
-        if (!target) return;
-
-        const action = target.dataset.action;
-
-        switch (action) {
-          case "compare":
-            navigateTo("/compare");
-            break;
-          case "find":
-            navigateTo("/find");
-            break;
-          case "signin":
-            navigateTo("/signin");
-            break;
-          case "signup":
-            navigateTo("/signup");
-            break;
-          case "signout":
-            AuthService.signOut();
-            navigateTo("/");
-            break;
+    // Logo click handler
+    const logo = this.element.querySelector<HTMLAnchorElement>(".logo");
+    if (logo) {
+      this.addEventListener(
+        logo,
+        "click",
+        (e) => {
+          e.preventDefault();
+          navigateTo("/");
         }
-      },
-      { signal: currentEventController.signal },
-    );
+      );
+    }
+
+    // Nav items click handler
+    const navItems = this.element.querySelector<HTMLUListElement>(".nav-items");
+    if (navItems) {
+      this.addEventListener(
+        navItems,
+        "click",
+        (e) => {
+          const target = (e.target as HTMLElement).closest<HTMLElement>(".nav-link");
+          if (!target) return;
+
+          const action = target.dataset.action;
+
+          switch (action) {
+            case "compare":
+              navigateTo("/compare");
+              break;
+            case "find":
+              navigateTo("/find");
+              break;
+            case "signin":
+              navigateTo("/signin");
+              break;
+            case "signup":
+              navigateTo("/signup");
+              break;
+            case "signout":
+              AuthServiceInstance.signOut();
+              navigateTo("/");
+              break;
+          }
+        }
+      );
+    }
 
     // Setup theme toggle button
-    const themeBtn =
-      navBarElement.querySelector<HTMLButtonElement>(".theme-toggle");
+    const themeBtn = this.element.querySelector<HTMLButtonElement>(".theme-toggle");
     if (themeBtn) setupThemeToggle(themeBtn);
-  };
 
-  // Clean up auth state listener when component is destroyed
-  const cleanup = () => {
-    if (currentEventController) {
-      currentEventController.abort();
+    // Listen for authentication state changes
+    this.authStateController = new AbortController();
+    this.addEventListener(
+      window,
+      'authStateChanged',
+      () => {
+        this.render();
+      },
+      { signal: this.authStateController.signal }
+    );
+  }
+
+  destroy(): void {
+    if (this.authStateController) {
+      this.authStateController.abort();
+      this.authStateController = null;
     }
-    if (authStateController) {
-      authStateController.abort();
-    }
-  };
+    super.destroy();
+  }
+}
 
-  // Listen for authentication state changes
-  authStateController = new AbortController();
-
-  window.addEventListener(
-    "authStateChanged",
-    () => {
-      renderNavBar();
-    },
-    { signal: authStateController.signal },
-  );
-
-  // Initial render
-  renderNavBar();
-
-  // Return cleanup function along with the element
-  (navBarElement as any).cleanup = cleanup;
-  return navBarElement;
-};
-
-export default NavBar;
+// Export factory function for backward compatibility
+export default function NavBarFactory(mount: HTMLElement): HTMLElement {
+  const navBar = new NavBar(mount);
+  navBar.init();
+  (mount as any).cleanup = () => navBar.destroy();
+  return mount;
+}
